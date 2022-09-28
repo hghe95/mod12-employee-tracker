@@ -174,19 +174,44 @@ addEmployee = () => {
               last_name: answers.lastName,
               manager_id: managerID,
               role_id: roleID
-          }, (err) => {
+          }, 
+            (err) => {
             if (err) throw err;
             console.table(answers)
-            start();
+            init();
           })
         });
       }
 
 update = () => {
-    db_connection.query(),
-    (err, answer) => {
+    db_connection.query(`SELECT * FROM employee`, (err, employeeData) => {
         if (err) throw err;
-        console.table(answer);
-        init();
-    }
+    db_connection.query(`SELECT * FROM role`, (err, roleData) => {
+        if (err) throw err;
+            inquirer.prompt([
+                {
+                    name: `employeeName`,
+                    type: `rawlist`,
+                    message: `Select which employee's information you would like to update`,
+                    choices: employeeData.map(function(data) {
+                        return `${data.firstName} ${lastName}`
+                    })
+                },
+                {
+                    name: `employeeRole`,
+                    type: `rawlist`,
+                    message: `What is this employee's new role?`,
+                    choices: roleData.map(function(data) {
+                        return data.title
+                    })
+                }
+            ])
+            .then (answers => {
+                db_connection.query(
+                    `UPDATE employee SET ? Where ?`,
+                    
+                )
+            })
+        })
+    })      
 }
