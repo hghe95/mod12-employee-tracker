@@ -54,7 +54,11 @@ init = () => {
 )}
 
 viewDepartments = () => {
-    db_connection.query(),
+    db_connection.query(
+        `SELECT employee.first_name AS firstName, 
+        employee.last_name AS lastName, 
+        department.name AS departmentName FROM employee JOIN role ON employee.role_id = role.id JOIN department 
+        ON role.department_id = department.id ORDER BY employee.id;`),
     (err, answer) => {
         if (err) throw err;
         console.table(answer);
@@ -63,7 +67,10 @@ viewDepartments = () => {
 }
 
 viewRoles = () => {
-    db_connection.query(),
+    db_connection.query(
+        `SELECT employee.first_name AS firstName, 
+        employee.last_name AS lastName, 
+        role.title AS roleTitle FROM employee JOIN role ON employee.role_id = role.id;`),
     (err, answer) => {
         if (err) throw err;
         console.table(answer);
@@ -72,7 +79,12 @@ viewRoles = () => {
 }
 
 viewEmployees = () => {
-    db_connection.query(),
+    db_connection.query(
+        `SELECT employee.first_name AS firstName, 
+        employee.last_name AS lastName, 
+        role.title AS roleTitle, 
+        department.name AS departmentName, 
+        CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id LEFT JOIN employee e on employee.manager_id = e.id;`),
     (err, answer) => {
         if (err) throw err;
         console.table(answer);
@@ -82,7 +94,7 @@ viewEmployees = () => {
 
 addDepartment = () => {
     db_connection.query(
-        `SELECT department.name FROM department`, (err, data) => {
+        `SELECT departmentName FROM department`, (err, data) => {
           if (err) throw err;
         inquirer.prompt([
             {
@@ -109,7 +121,7 @@ addDepartment = () => {
 
 addRole = () => {
     db_connection.query(
-        `SELECT role.name FROM role`, (err, data) => {
+        `SELECT roleName FROM role`, (err, data) => {
           if (err) throw err;
         inquirer.prompt([
             {
@@ -192,7 +204,7 @@ update = () => {
                 {
                     name: `employeeName`,
                     type: `rawlist`,
-                    message: `Select which employee's information you would like to update`,
+                    message: `Select which employee's role you would like to update`,
                     choices: employeeData.map(function(data) {
                         return `${data.firstName} ${lastName}`
                     })
@@ -209,7 +221,23 @@ update = () => {
             .then (answers => {
                 db_connection.query(
                     `UPDATE employee SET ? Where ?`,
-                    
+                [
+                    {
+                        role_id: employeeData.find(function(data) {
+                            return data.title === answers.employeeRole
+                        })
+                    },
+                    {
+                        id: roleData.find(function(data) {
+                            return `${data.firstName} ${data.lastName}` === answers.employeeName;
+                        })
+                    }    
+                ],
+                function(err) {
+                    if (err) throw err;
+                    console.log(`/n The empoloyee's role has been updated`);
+                    init();
+                }   
                 )
             })
         })
