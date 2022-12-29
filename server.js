@@ -2,18 +2,13 @@ const inquirer = require(`inquirer`);
 const mysql = require(`mysql2`);
 const consoleTable = require(`console.table`);
 
-require(`dotenv`).config();
 
 const db_connection = mysql.createConnection({
     host: `localhost`,
+    port: 3306,
     user: `root`,
     password: ``,
-    database: `employee`
-});
-
-db_connection.connect(err => {
-    if (err) throw err;
-    init();
+    database: `employee_db`
 });
 
 init = () => {
@@ -132,7 +127,7 @@ addRole = () => {
             {
                 name: `roleSalary`,
                 type: `input`,
-                message: `Whatis the role's salary?`
+                message: `What is the role's salary?`
             }
             ])
             .then((answer) => {
