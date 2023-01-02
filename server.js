@@ -3,13 +3,16 @@ const mysql = require(`mysql2`);
 const consoleTable = require(`console.table`);
 
 
-const db_connection = mysql.createConnection({
-    host: `localhost`,
-    port: 3306,
-    user: `root`,
-    password: ``,
-    database: `employee_db`
-});
+const db_connection = mysql.createConnection(
+    {
+        host: `localhost`,
+        port: 3306,
+        user: `root`,
+        password: ``,
+        database: `employee_db`
+    },
+    console.log(`Now connected to employee_db`)
+);
 
 init = () => {
     inquirer.prompt ({
@@ -24,7 +27,8 @@ init = () => {
             `Add a department`,
             `Add a role`,
             `Add an employee`,
-            `Update`
+            `Update`,
+            `End`
         ]
     })
     .then((answers) => {
@@ -44,6 +48,8 @@ init = () => {
             addEmployee();
         } else if (choices === `Update`) {
             update();
+        } else if (choices === `End`) {
+            db_connection.end();
         }
     }   
 )}
