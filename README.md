@@ -1,4 +1,6 @@
-#Employee-Tracker
+Employee-Tracker
+
+![Insomnia](./images/insomnia.png "Insomnia")
 
 Description
 This application is a content managment system (CMS) that helps users at a company with tracking their employees. It was made using Node.js, Inquirer, and MySQL.
