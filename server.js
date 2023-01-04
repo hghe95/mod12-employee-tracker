@@ -130,9 +130,9 @@ addDepartment = async() => {
                 ])
             .then((answer) => {
             db_connection.query(
-                `INSERT INTO department SET ?`,
+                `INSERT INTO department SET name`,
                 {
-                name: answer.departmentName
+                name: answer.name
                 },
                 (err) => {
                     if (err) throw err;
